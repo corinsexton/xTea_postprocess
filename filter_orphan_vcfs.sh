@@ -1,15 +1,11 @@
 #!/bin/bash
 
-#source /n/app/miniconda3/23.1.0/etc/profile.d/conda.sh
-#conda activate xTea
-
-results_dir=/home/cos689/Kamihara_DFCI_WGS/thyroid_cancer/analysis/xtea/results/
+results_dir=$1
+id_file=$2
 
 while read -r i f; do
     
     bam_id=$i
-    #bam_file=${f##*/}
-    #bam_file=${bam_file%%.cram}
     bam_file=$i
 
     echo $bam_id
@@ -41,4 +37,4 @@ while read -r i f; do
         mv final ${results_dir}/${bam_id}/SVA/${bam_id}_filtered_SVA.vcf
     #fi
 
-done < ids.txt
+done < ${id_file}

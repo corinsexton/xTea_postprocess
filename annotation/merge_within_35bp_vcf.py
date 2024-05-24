@@ -3,7 +3,7 @@
 import sys
 
 if len(sys.argv) < 3:
-	print('USAGE: ./check.py input.vcf <sample_size> > output.vcf')
+	print('USAGE: ./merge_within_35bp_vcf.py input.vcf > output.vcf')
 	sys.exit()
 
 infile_name = sys.argv[1]
@@ -12,18 +12,18 @@ def write_out_line(line,genos):
 	print('\t'.join(line) + '\t' + '\t'.join(genos))
 
 
-sample_size = int(sys.argv[2])
 
 prev_chr = 'chr1'
 prev_start = 0
 prev_line = ''
-prev_genos = ['NA'] * sample_size
 
 with open(infile_name) as infile:
 
 	for line in infile:
 		if line[0] == '#': 
 			print(line.strip())
+			sample_size = len(line.split()) - 9
+			prev_genos = ['NA'] * sample_size
 		else:
 			for line in infile:
 				ll = line.strip().split()

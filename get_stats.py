@@ -7,24 +7,20 @@ import re
 from pathlib import Path
 from pysam import VariantFile
 
-results_dir = "/home/cos689/Kamihara_DFCI_WGS/thyroid_cancer/analysis/xtea/results"
+results_dir = sys.argv[1]
 
-o_totals = open('mei_totals.tsv','w')
-o_totals_HMEID = open('mei_hmeid_totals.tsv','w')
-o_gt = open('mei_genotypes.tsv','w')
-o_reg = open('mei_regions.tsv','w')
-o_rmsk = open('mei_rmsk.tsv','w')
+o_totals = open(f'{results_dir}/../mei_totals.tsv','w')
+o_gt = open(f'{results_dir}/../mei_genotypes.tsv','w')
+o_reg = open(f'{results_dir}/../mei_regions.tsv','w')
 
 o_totals.write('\t'.join(["sample_id","TE_type","n"]) + '\n')
-o_totals_HMEID.write('\t'.join(["sample_id","TE_type","HMEID_status","n"]) + '\n')
 o_gt.write('\t'.join(["sample_id","TE_type","genotype","n"]) + '\n')
 o_reg.write('\t'.join(["sample_id","TE_type","region_type","n"]) + '\n')
-o_rmsk.write('\t'.join(["sample_id","TE_type","RMSK_presence","n"]) + '\n')
 
 ids = set()
 
 # open ids
-with open("ids.txt") as idfile:
+with open(sys.argv[2]) as idfile:
     for line in idfile:
         ids.add(line.strip())       
 
@@ -145,10 +141,8 @@ for i in ids:
 
     # headers
     #  o_totals.write('\t'.join(["sample_id","TE_type","n"]) + '\n')
-    #  o_totals_HMEID.write('\t'.join(["sample_id","TE_type","HMEID_status","n"]) + '\n')
     #  o_gt.write('\t'.join(["sample_id","TE_type","genotype","n"]) + '\n')
     #  o_reg.write('\t'.join(["sample_id","TE_type","region_type","n"]) + '\n')
-    #  o_rmsk.write('\t'.join(["sample_id","TE_type","RMSK_presence","n"]) + '\n')
     for te in vcf_dict[i]:
         total = vcf_dict[i][te]['total']
         o_totals.write(f'{i}\t{te}\t{total}\n')
@@ -174,16 +168,8 @@ for i in ids:
         rmsk_mei_copy = vcf_dict[i][te]['total_in_mei_and_rmsk']
         none_copy = vcf_dict[i][te]['total_not_in_mei_or_rmsk']
 
-        o_rmsk.write(f'{i}\t{te}\tonly_rmsk\t{rmsk_copy}\n')
-        o_rmsk.write(f'{i}\t{te}\tonly_mei\t{mei_copy}\n')
-        o_rmsk.write(f'{i}\t{te}\tboth_mei_rmsk\t{rmsk_mei_copy}\n')
-        o_rmsk.write(f'{i}\t{te}\tneither\t{none_copy}\n')
-        
-
                 
 
 o_totals.close()
-o_totals_HMEID.close()
 o_gt.close()
 o_reg.close()
-o_rmsk.close()

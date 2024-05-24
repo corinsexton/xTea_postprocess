@@ -24,5 +24,5 @@
 
 
 #time ./annotate_xtea.py LFS /home/cos689/data1/corinne/ref/gencode/gencode.v45.basic.annotation.gff3.gz L1_LFS_light_kg.vcf annotated_LFS_L1.tsv
-time ./annotate_xtea.py LFS /home/cos689/data1/corinne/ref/gencode/gencode.v45.basic.annotation.gff3.gz ALU_LFS_light_kg.vcf annotated_LFS_ALU.tsv
+time ./annotate_xtea.py /home/cos689/data1/corinne/ref/gencode/gencode.v45.basic.annotation.gff3.gz ALU_LFS_light_kg.vcf annotated_LFS_ALU.tsv
 ##time ./annotate_xtea.py /home/cos689/data1/corinne/ref/gencode/gencode.v45.basic.annotation.gff3.gz SVA_LFS_light_merged.vcf annotated_SVA.tsv
