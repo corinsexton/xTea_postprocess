@@ -2,7 +2,7 @@
 
 import sys
 
-if len(sys.argv) < 3:
+if len(sys.argv) < 2:
 	print('USAGE: ./merge_within_35bp_vcf.py input.vcf > output.vcf')
 	sys.exit()
 

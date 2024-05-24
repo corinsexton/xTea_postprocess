@@ -40,3 +40,4 @@ bcftools +fill-tags ${bcf_dir}/${dataset_prefix}.vcf -- -t AN,AC,AF > ${results_
 
 if [[ "$remove_bcfs" == "remove" ]]; then
 	rm -rf ${bcf_dir}
+fi
