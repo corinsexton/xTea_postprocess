@@ -29,24 +29,12 @@ vcf_dict = dict()
 for i in ids:
     vcf_dict[i] = {'LINE1':{"total":0,
                                "intron":0,"exon":0,"intergenic":0, "down_stream":0, "up_stream":0,
-                               'total_in_mei_and_rmsk':0,
-                               'total_only_in_mei':0,
-                               'total_only_in_rmsk':0,
-                               'total_not_in_mei_or_rmsk':0,
                                "homozygous":0,"heterozygous":0},
                     'ALU':{"total":0,
                                "intron":0,"exon":0,"intergenic":0, "down_stream":0, "up_stream":0,
-                               'total_in_mei_and_rmsk':0,
-                               'total_only_in_mei':0,
-                               'total_only_in_rmsk':0,
-                               'total_not_in_mei_or_rmsk':0,
                                "homozygous":0,"heterozygous":0},
                     'SVA':{"total":0, 
                                "intron":0,"exon":0,"intergenic":0, "down_stream":0, "up_stream":0,
-                               'total_in_mei_and_rmsk':0,
-                               'total_only_in_mei':0,
-                               'total_only_in_rmsk':0,
-                               'total_not_in_mei_or_rmsk':0,
                                "homozygous":0,"heterozygous":0},
                     }
 
@@ -65,9 +53,6 @@ for i in ids:
 
         vcf = VariantFile(vcf_file)
 
-        rmsk_copies = set()
-        all_copies = set()
-        not_mei_copies = set()
 
         for rec in vcf.fetch():
             
@@ -78,7 +63,6 @@ for i in ids:
             #    vcf_dict[i][te]['total'] += 1
 
             vcf_dict[i][te]['total'] += 1
-            all_copies.add((rec.contig,rec.pos))
 
             # gene region:
             if rec.info['GENE_INFO'] == 'not_gene_region':
@@ -102,38 +86,6 @@ for i in ids:
                vcf_dict[i][te]['homozygous'] += 1
             else:
                vcf_dict[i][te]['heterozygous'] += 1
-
-
-            if not re.search("not_in",rec.info['REF_REP']):
-                rmsk_copies.add((rec.contig,rec.pos))
-
-
-        mei_vcf_file = results_dir + '/' + i + '/' + te_pref + '/' + i + '_filtered_notinHMEID.vcf'
-        if not os.path.isfile(mei_vcf_file):
-            print (f'MISSING FILE:\t {mei_vcf_file}')
-            continue
-
-        mei_vcf = VariantFile(mei_vcf_file)
-
-        for rec in mei_vcf.fetch():
-            not_mei_copies.add((rec.contig,rec.pos))
-
-        #if len(all_copies) != vcf_dict[i][te]['total']: 
-        #    print("PROBLEM, total != all_copies length")
-        #    sys.exit()
-
-        mei_copies = all_copies - not_mei_copies
-        vcf_dict[i][te]['total_in_mei_and_rmsk'] = len(mei_copies & rmsk_copies)
-        vcf_dict[i][te]['total_only_in_mei'] = len(mei_copies) - vcf_dict[i][te]['total_in_mei_and_rmsk']
-        vcf_dict[i][te]['total_only_in_rmsk'] = len(rmsk_copies) - vcf_dict[i][te]['total_in_mei_and_rmsk']
-        vcf_dict[i][te]['total_not_in_mei_or_rmsk'] = len(all_copies) -vcf_dict[i][te]['total_in_mei_and_rmsk'] - vcf_dict[i][te]['total_only_in_mei'] - vcf_dict[i][te]['total_only_in_rmsk']
-
-        mei_copies.clear()
-        rmsk_copies.clear()
-        all_copies.clear()
-        not_mei_copies.clear()
-
-
 
 
 
@@ -163,11 +115,6 @@ for i in ids:
         o_reg.write(f'{i}\t{te}\tupstream\t{upstream}\n')
         o_reg.write(f'{i}\t{te}\tdownstream\t{downstream}\n')
         
-        rmsk_copy = vcf_dict[i][te]['total_only_in_rmsk']
-        mei_copy = vcf_dict[i][te]['total_only_in_mei']
-        rmsk_mei_copy = vcf_dict[i][te]['total_in_mei_and_rmsk']
-        none_copy = vcf_dict[i][te]['total_not_in_mei_or_rmsk']
-
                 
 
 o_totals.close()
