@@ -11,17 +11,7 @@ parser.add_argument("vcf_file",help = 'vcf annotation file')
 parser.add_argument("outfile",help = 'output_tsv file')
 args = parser.parse_args()
 
-
-ann = pr.read_gff3(args.gff_file)
-introns = ann.features.introns(by="gene")
-tss = ann.features.tss()
-
-ann_all = pd.concat([ann.df,introns.df,tss.df])
-ann_all.drop(ann_all[ann_all.Feature == "CDS"].index,inplace = True)
-ann_all.drop(ann_all[ann_all.Feature == "gene"].index,inplace = True)
-ann_all.drop(ann_all[ann_all.Feature == "transcript"].index,inplace = True)
-
-ann_all = pr.PyRanges(ann_all)
+ann_all = pr.read_gff3(args.gff_file)
 
 with open(args.vcf_file) as vcf_file:
 	line = vcf_file.readline()
@@ -33,7 +23,7 @@ with open(args.vcf_file) as vcf_file:
 vcf = pd.read_csv(args.vcf_file, sep="\t", comment='#',names = header)
 vcf = vcf.rename({"#CHROM": "Chromosome"}, axis=1)
 vcf = vcf.rename({"POS": "Start"}, axis=1)
-vcf['End'] = vcf.INFO.str.split(';').str[2].replace('END=','',regex = True)
+vcf['End'] = vcf.INFO.str.split(';').str[1].replace('SVLEN=','',regex = True) + vcf.START
 
 vcf = pr.PyRanges(vcf)
 
